@@ -3,38 +3,38 @@ import { useState, useEffect } from "react";
 
 export default function App() {
   const [timer, setTimer] = useState(0);
-  const [timerEnd, setTimerEnd] = useState(0);
-  const [timerStop, setTimerStop] = useState(0);
-  const [timerStopFlag, setTimerStopFlag] = useState(false);
+  const [start, setStart] = useState(true);
+  const [maxTimer, setMaxTimer] = useState(0);
 
   useEffect(() => {
-    const clearTimer = setInterval(() => {
-      setTimer((timer) => timer + 1);
+    let intervalTimer = setInterval(() => {
+      if (start) {
+        setTimer((timer) => timer + 1);
+      }
+
+      if (timer >= maxTimer) {
+        setTimer(0);
+      }
     }, 1000);
 
-    if (timer > timerEnd) {
-      setTimer(0);
-    }
-
-    return () => clearInterval(clearTimer);
+    return () => clearInterval(intervalTimer);
   }, [timer]);
 
-  const handleStart = (end) => {
-    timerStopFlag ? setTimer(timerStop) : setTimer((timer) => timer + 1);
-    setTimerEnd(end);
-    setTimerStopFlag(false);
+  let handleStart = (maxvalue) => {
+    setStart(true);
+    setTimer((timer) => timer + 1);
+    setMaxTimer(maxvalue);
   };
 
-  const handleStop = () => {
-    setTimerStop(timer);
-    setTimerStopFlag(true);
+  let handleStop = () => {
+    setStart(false);
   };
 
   return (
     <div className="App">
       <h1>Timer</h1>
-      {timerStopFlag ? timerStop : timer}
-      <button onClick={() => handleStart(5)}>Start</button>
+      <p>{timer}</p>
+      <button onClick={() => handleStart(10)}>Start</button>
       <button onClick={handleStop}>Stop</button>
     </div>
   );
